@@ -9,12 +9,16 @@ import CompareList from "../../components/CompareList";
 
 export default class Main extends Component {
   state = {
+    loading: false,
     repositoryInput: "",
-    repositories: []
+    repositories: [],
+    repositoryError: false
   };
 
   handleAddRepository = async e => {
     e.preventDefault();
+
+    this.setState({ loading: true });
 
     try {
       const { data: repository } = await api.get(
@@ -26,9 +30,17 @@ export default class Main extends Component {
 
       this.setState({
         repositoryInput: "",
-        repositories: [...this.state.repositories, repository]
+        repositories: [...this.state.repositories, repository],
+        repositoryError: false
       });
-    } catch (err) {}
+    } catch (err) {
+      this.setState({
+        repositoryInput: "",
+        repositoryError: true
+      });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   render() {
@@ -36,14 +48,23 @@ export default class Main extends Component {
       <Container>
         <img src={ragnarok} alt="ragnarok assasin" />
 
-        <Form onSubmit={this.handleAddRepository}>
+        <Form
+          withError={this.state.repositoryError}
+          onSubmit={this.handleAddRepository}
+        >
           <input
             type="text"
             placeholder="user/repository"
             value={this.state.repositoryInput}
             onChange={e => this.setState({ repositoryInput: e.target.value })}
           />
-          <button type="submit">OK</button>
+          <button type="submit">
+            {this.state.loading ? (
+              <i className="fa fa-spinner fa-pulse" />
+            ) : (
+              `OK`
+            )}
+          </button>
         </Form>
 
         <CompareList repositories={this.state.repositories} />
