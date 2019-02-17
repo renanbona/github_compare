@@ -1,7 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { Container, Form } from "./styles";
 
 import ragnarok from "../../assets/assasin.jpg";
+
+import CompareList from "../../components/CompareList";
 
 const Main = () => (
   <Container>
@@ -11,6 +13,8 @@ const Main = () => (
       <input type="text" placeholder="user/repository" />
       <button type="submit">OK</button>
     </Form>
+
+    <CompareList />
   </Container>
 );
 
